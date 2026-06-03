@@ -16,3 +16,6 @@ sed -i "/\[Rule\]/a $MY_RULES" temp.conf
 mv temp.conf shadow.conf
 
 echo "规则同步并修改完成！"
+
+# 在推送到 GitHub 后，通知 jsDelivr 刷新该文件的缓存
+curl -s "https://purge.jsdelivr.net/gh/jllioo0/clash@main/shadow.conf"
