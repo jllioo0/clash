@@ -9,7 +9,7 @@ sed -i 's/172.16.0.0\/12/172.16.0.0\/14,172.20.0.0\/15,172.24.0.0\/13/g' temp.co
 
 # 3. 定义你需要强行置顶插入的自定义规则
 # \n 用于换行
-MY_RULES="IP-CIDR,172.22.11.0/24,PROXY\nIP-CIDR,172.23.11.0/24,PROXY"
+MY_RULES="IP-CIDR,172.22.11.0/24,PROXY\nIP-CIDR,172.23.11.0/24,PROXY\nDOMAIN-SUFFIX,dameng.com,Direct\nDOMAIN-SUFFIX,yljlmi.win,Direct"
 
 # 4. 使用 sed 匹配 [Rule] 标签，并在其下一行插入自定义规则
 # 这里兼容了不同系统换行符的问题
