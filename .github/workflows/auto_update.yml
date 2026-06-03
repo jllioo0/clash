@@ -2,14 +2,12 @@ name: Auto Update Shadowrocket Rules
 
 on:
   schedule:
-    # 每天凌晨 4 点自动执行一次 (UTC 时间为前一天 20:00)
-    - cron: '0 20 * * *'
+    # 每天凌晨 2 点自动执行一次 (UTC 时间为前一天 18:00)
+    - cron: '0 18 * * *'
   workflow_dispatch: # 允许你随时在 GitHub 网页上点击手动触发执行
 
-# --------- 核心修复：强行开启该工作流的写权限 ---------
 permissions:
   contents: write
-# --------------------------------------------------
 
 jobs:
   update:
@@ -18,7 +16,6 @@ jobs:
     - name: 签出仓库代码
       uses: actions/checkout@v4
       with:
-        # 使用默认的 GITHUB_TOKEN 确保具备写权限
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: 赋予脚本执行权限并运行
@@ -30,7 +27,14 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add shadow.conf
-        # 只有在文件发生实质性改变时才提交，防止空提交报错
-        git diff --quiet && git diff --staged --quiet || git commit -m "自动同步最新规则并追加自定义网段"
-        git push
+        
+        # 暂存所有可能发生变化的修改（包括配置文件和脚本本身）
+        git add -A
+        
+        # 检查暂存区是否有东西需要提交
+        if ! git diff --cached --quiet; then
+          git commit -m "自动同步最新规则并追加自定义网段"
+          git push
+        else
+          echo "规则文件已经是最新，无需更新。"
+        fi
